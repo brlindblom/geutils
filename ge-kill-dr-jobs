@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+# Simple utility to kill all jobs in the 'dr' state
+#
+# 09/29/2008 - Brian Smith - Create script, test, and link to /sbin
+#
+
+for i in `qstat -u \* | awk --posix '/^[ ]+[0-9]+.+d(r|t)[ ]+[0-9\/]{10}.+$/ { print $1 }'`
+do
+	qdel -f $i
+done

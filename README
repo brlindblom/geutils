@@ -1,0 +1,8 @@
+These are some helper scripts for managing GridEngine.  They've come in handy from time to time
+
+* ge-kill-dr-jobs       - Gets rid of jobs stuck in the 'dr' state
+* ge-pe-env-setup       - Source this from a qlogin session to get everything set up to run parallel jobs
+                          VERY handy for parallel application debugging
+* ge-kill-orphan-procs  - Runs as a 5 minute cronjob to make sure no stragling processes are left after job
+                          completion
+* ge-set-hgroup-complex - Lets you set complex attributes for hosts in a host group

@@ -1,0 +1,46 @@
+#!/bin/bash
+
+#
+# Add or remove a complex attribute from the configuration
+#
+
+if [ "-d" == "$1" ]; then
+	DEL=true
+	shift
+fi
+
+HGROUP=$1
+COMPLEX=$2
+COMPLEX_TAG=`echo $COMPLEX | cut -f1 -d'='`
+COMPLEX_VALUE=`echo $COMPLEX | cut -f2 -d'='`
+
+if [ -z "$1" ] || [ -z "$2" ]; then
+	echo "Missing arguments!"
+	exit 1
+fi
+
+if [ "$HGROUP" == "global" ]; then
+	H_LIST=global
+else
+	H_LIST=`qconf -shgrp $HGROUP | egrep -o '([a-z0-9-]+\.)+[a-z0-9-]+'`
+fi
+
+for h in $H_LIST; do
+	H_CPX=$(qconf -se $h | egrep -o "$COMPLEX_TAG=[0-9A-Za-z]+" | awk '{ print $1 }')
+
+	if [ "$H_CPX" == "$COMPLEX" ] && [ -z "$DEL" ]; then
+		echo "$h: No change required"
+	else
+		if [ -n "$H_CPX" ]; then
+			M_HOSTS="$M_HOSTS $h"
+		else
+			A_HOSTS="$A_HOSTS $h"
+		fi
+	fi
+done
+if [ -z "$DEL" ]; then
+	for h in $A_HOSTS; do qconf -aattr exechost complex_values $COMPLEX $h; done
+	for h in $M_HOSTS; do qconf -mattr exechost complex_values $COMPLEX $h; done
+else
+	for h in $M_HOSTS; do qconf -dattr exechost complex_values $COMPLEX_TAG $h; done
+fi
