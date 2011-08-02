@@ -26,7 +26,7 @@ else
 fi
 
 for h in $H_LIST; do
-	H_CPX=$(qconf -se $h | egrep -o "$COMPLEX_TAG=[0-9A-Za-z]+" | awk '{ print $1 }')
+	H_CPX=$(qconf -se $h | egrep -o "$COMPLEX_TAG=[0-9A-Za-z_]+" | awk '{ print $1 }')
 
 	if [ "$H_CPX" == "$COMPLEX" ] && [ -z "$DEL" ]; then
 		echo "$h: No change required"
